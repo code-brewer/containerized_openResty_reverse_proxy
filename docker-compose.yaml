@@ -1,0 +1,76 @@
+version: "3.6"
+
+services:
+
+  my_app1:
+    extends:
+            file: common_app.yaml
+            service: my_app
+            #ports:
+            #- "6001:80"
+            #- "7001:443"
+    container_name: my_app1
+    expose:
+      - "80"
+    volumes:
+      - type: bind
+        source: ./openRestySetting_testnet_ssl/conf.d/app1.conf
+        target: /etc/nginx/conf.d/default.conf
+        read_only: true
+
+
+  my_app2:
+    extends:
+            file: common_app.yaml
+            service: my_app
+    container_name: my_app2
+    expose:
+      - "80"
+    volumes:
+      - type: bind
+        source: ./openRestySetting_testnet_ssl/conf.d/app2.conf
+        target: /etc/nginx/conf.d/default.conf
+        read_only: true
+
+
+  my_app3:
+    extends:
+            file: common_app.yaml
+            service: my_app
+    container_name: my_app3
+    expose:
+      - "80"
+    volumes:
+      - type: bind
+        source: ./openRestySetting_testnet_ssl/conf.d/app3.conf
+        target: /etc/nginx/conf.d/default.conf
+        read_only: true
+
+
+  my_app_frontend:
+    image: openresty/openresty
+    container_name: my_app_frontend
+    networks:
+      - webnetwork
+    ports:
+      - "9009:80"
+      - "9003:443"
+    #      - "443:443"
+    volumes:
+      - ./openRestySetting_testnet_ssl/logger_folder/:/usr/local/openresty/nginx/logs/
+      - type: bind
+        source: ./openRestySetting_testnet_ssl/conf.d/frontEnd.conf
+        #target: /etc/nginx/conf.d/frontEnd.conf
+        target: /etc/nginx/conf.d/default.conf
+        read_only: true
+      - type: bind
+        source: ./openRestySetting_testnet_ssl/nginx.conf
+        #target: /etc/nginx/nginx.conf
+        target: /usr/local/openresty/nginx/conf/nginx.conf
+        read_only: true
+
+
+networks:
+  webnetwork:
+    name: webnetwork
+    driver: bridge

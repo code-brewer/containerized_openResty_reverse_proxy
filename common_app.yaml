@@ -1,0 +1,16 @@
+version: "3.6"
+
+services:
+
+  my_app:
+    image: openresty/openresty
+    networks:
+      - webnetwork
+    volumes:
+      - ./openRestySetting_testnet_ssl/logger_folder/:/usr/local/openresty/nginx/logs/
+      - type: bind
+        source: ./openRestySetting_testnet_ssl/nginx.conf
+        #target: /etc/nginx/nginx.conf
+        target:  /usr/local/openresty/nginx/conf/nginx.conf
+        read_only: true
+
